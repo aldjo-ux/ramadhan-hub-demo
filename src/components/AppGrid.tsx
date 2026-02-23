@@ -13,7 +13,7 @@ const apps = [
     description: "Pantau ibadah harian Ayah & Bunda.",
     icon: ClipboardCheck,
     variant: "emerald" as const,
-    href: "https://demoramadhantracker.netlify.app",
+    href: "https://demoramadantracker.netlify.app/",
     customImage: ramadhanIbadahTrackerLogo,
   },
   {
