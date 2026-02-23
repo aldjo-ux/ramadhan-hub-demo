@@ -1,0 +1,299 @@
+{
+  "updatedAt": "2026-01-22T08:36:50.811Z",
+  "createdAt": "2026-01-20T02:17:31.264Z",
+  "id": "1GY-6FP2aqafcvml1lLcQ",
+  "name": "Daily Morning Briefing via Telegram",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": "primary"
+        },
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{ $today.toISO() }}",
+          "timeMax": "={{ $today.plus({ days: 1 }).toISO() }}",
+          "singleEvents": true,
+          "orderBy": "startTime"
+        }
+      },
+      "id": "2420f1f4-931a-4cec-a48a-ae9b559a1b50",
+      "name": "Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.1,
+      "position": [
+        2912,
+        -560
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "NGjxaAvujNzd6KwY",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Berikut data untuk Morning Briefing hari ini:\n\n**Data Jadwal Google Calendar:**\n{{ JSON.stringify($('Google Calendar').all(), null, 2) }}\n\n**Data Task Notion (Deadline Hari Ini, Belum Selesai):**\n{{ JSON.stringify($('Notion Tasks').all(), null, 2) }}\n\nBuatkan Morning Briefing berdasarkan data di atas.",
+        "options": {
+          "systemMessage": "Kamu adalah Jarvis, asisten pribadi yang cerdas dan menyenangkan. Tugasmu adalah merangkum data jadwal kalender dan daftar tugas hari ini menjadi pesan singkat 'Morning Briefing' yang akan dikirim ke Telegram.\n\nAturan:\n1. Jika ada jadwal/event, sebutkan dengan jelas waktu dan nama acaranya.\n2. Jika ada task dari Notion, sebutkan judul task dan deadline-nya.\n3. Jika data kosong (tidak ada jadwal atau task), berikan motivasi singkat untuk memulai hari.\n4. Gunakan gaya bahasa santai, positif, dan menyemangati.\n5. Format output dalam Markdown yang kompatibel dengan Telegram.\n6. Awali pesan dengan emoji ☀️ dan salam pagi."
+        }
+      },
+      "id": "a7b952e9-2082-4a99-a312-3c8bf71ac030",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        3552,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "159506183",
+        "text": "={{ $('AI Agent').item.json.output }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "58158691-5b86-45e2-9412-8b7dc40bbebc",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3904,
+        -560
+      ],
+      "webhookId": "a894c11c-08ba-433d-b944-74b58837f4a5",
+      "credentials": {
+        "telegramApi": {
+          "id": "r99DXmXRNZnTJRue",
+          "name": "Personal Ass Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "404e735c-acbb-44ff-8d3d-9af83c726da9",
+      "name": "Google Gemini Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3552,
+        -336
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "HKZA0gKDOxxvN6XB",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7,
+              "triggerAtMinute": 1
+            }
+          ]
+        }
+      },
+      "id": "8e7fd27d-fdec-4896-8d76-64e363d06b60",
+      "name": "Schedule Trigger Jam 7 Pagi",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        2688,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ini cuma trik biar flow jadi 1 item lagi\nreturn { json: { status: \"Data Ready\" } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3328,
+        -560
+      ],
+      "id": "675fa02f-d841-4360-bcd5-49de5eec179c",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "task": "UzF1Q0xvdWVwdHVWZlJXeA",
+        "returnAll": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
+      "position": [
+        3120,
+        -560
+      ],
+      "id": "0726a130-da36-4633-a64a-da742b0b4229",
+      "name": "Get many tasks",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "o4g8ZvkZnS8fK6J4",
+          "name": "Google Tasks account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Get many tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger Jam 7 Pagi": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many tasks": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "a9a45803-9593-4fe3-af18-18022e8523a9",
+  "activeVersionId": null,
+  "versionCounter": 9,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-01-20T02:17:31.268Z",
+      "createdAt": "2026-01-20T02:17:31.268Z",
+      "role": "workflow:owner",
+      "workflowId": "1GY-6FP2aqafcvml1lLcQ",
+      "projectId": "IYL9rzHnL2fAjdSV",
+      "project": {
+        "updatedAt": "2025-12-25T02:05:57.661Z",
+        "createdAt": "2025-12-25T02:02:58.676Z",
+        "id": "IYL9rzHnL2fAjdSV",
+        "name": "Alam Djohan <aldjo23@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "472e72e5-6e73-43aa-89e3-0350cdf70cbb",
+        "projectRelations": [
+          {
+            "updatedAt": "2025-12-25T02:02:58.676Z",
+            "createdAt": "2025-12-25T02:02:58.676Z",
+            "userId": "472e72e5-6e73-43aa-89e3-0350cdf70cbb",
+            "projectId": "IYL9rzHnL2fAjdSV",
+            "user": {
+              "updatedAt": "2026-02-07T04:23:37.000Z",
+              "createdAt": "2025-12-25T02:02:58.401Z",
+              "id": "472e72e5-6e73-43aa-89e3-0350cdf70cbb",
+              "email": "aldjo23@gmail.com",
+              "firstName": "Alam",
+              "lastName": "Djohan",
+              "personalizationAnswers": {
+                "version": "v4",
+                "personalization_survey_submitted_at": "2025-12-25T02:06:19.014Z",
+                "personalization_survey_n8n_version": "2.1.4",
+                "companySize": "<20",
+                "companyType": "saas",
+                "role": "business-owner",
+                "reportedSource": "friend"
+              },
+              "settings": {
+                "userActivated": true,
+                "easyAIWorkflowOnboarded": true,
+                "firstSuccessfulWorkflowId": "aXTTZ1V1NpYha1px",
+                "userActivatedAt": 1766675420284,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1770270980440
+                }
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2026-02-06",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}
