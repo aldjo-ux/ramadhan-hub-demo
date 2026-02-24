@@ -9,14 +9,6 @@ import ramadhanQuizGamesLogo from "@/assets/ramadhan-quiz-games-logo.png";
 
 const apps = [
   {
-    title: "Ramadhan Ibadah Tracker",
-    description: "Pantau ibadah harian Ayah & Bunda.",
-    icon: ClipboardCheck,
-    variant: "emerald" as const,
-    href: "https://demoramadantracker.netlify.app/",
-    customImage: ramadhanIbadahTrackerLogo,
-  },
-  {
     title: "Jurnal Ramadhan Ceria",
     description: "Checklist seru untuk si kecil.",
     icon: Star,
@@ -39,6 +31,14 @@ const apps = [
     variant: "purple" as const,
     href: "https://demoramadhanquizgames.netlify.app",
     customImage: ramadhanQuizGamesLogo,
+  },
+  {
+    title: "Ramadhan Ibadah Tracker",
+    description: "Pantau ibadah harian Ayah & Bunda.",
+    icon: ClipboardCheck,
+    variant: "emerald" as const,
+    href: "https://demoramadantracker.netlify.app/",
+    customImage: ramadhanIbadahTrackerLogo,
   },
 ];
 
